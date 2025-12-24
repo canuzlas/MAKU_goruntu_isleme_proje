@@ -12,7 +12,6 @@ SES_DOSYASI = os.path.join(os.path.dirname(__file__), "assets/uzaklas.mp3")
 AYAR_DOSYASI = os.path.join(os.path.dirname(__file__), "ayarlar.json")
 MOLA_SURESI = 20 * 60     # 20 dakikada bir mola hatırlatması (saniye)
 
-# Varsayılan ayarlar
 VARSAYILAN_AYARLAR = {
     "uyari_mesafesi": 30,
     "ses_acik": True
@@ -48,10 +47,9 @@ except FileNotFoundError:
     print(f"HATA: '{SES_DOSYASI}' bulunamadı!")
     sys.exit()
 
-# Yeni değişkenler
-mesafe_listesi = []       # Mesafe geçmişi için
-baslangic_zamani = time.time()  # Program başlangıç zamanı
-son_mola_zamani = time.time()   # Son mola hatırlatması zamanı
+mesafe_listesi = []       
+baslangic_zamani = time.time()  
+son_mola_zamani = time.time()  
 
 mp_face_mesh = mp.solutions.face_mesh
 face_mesh = mp_face_mesh.FaceMesh(
@@ -77,12 +75,10 @@ while True:
     
     sonuclar = face_mesh.process(rgb_kare)
     
-    # Geçen süreyi hesapla
     gecen_sure = time.time() - baslangic_zamani
     dakika = int(gecen_sure // 60)
     saniye = int(gecen_sure % 60)
     
-    # Mola hatırlatması kontrolü
     mola_uyarisi = False
     if time.time() - son_mola_zamani >= MOLA_SURESI:
         mola_uyarisi = True
@@ -102,12 +98,10 @@ while True:
             
             mesafe_cm = (ODAK_UZAKLIGI * GERCEK_GOZ_ARALIGI) / piksel_mesafe
             
-            # Mesafe geçmişine ekle (son 100 ölçüm)
             mesafe_listesi.append(mesafe_cm)
             if len(mesafe_listesi) > 100:
                 mesafe_listesi.pop(0)
             
-            # Ortalama mesafe hesapla
             ortalama_mesafe = sum(mesafe_listesi) / len(mesafe_listesi)
 
             if mesafe_cm < uyari_mesafesi:
